@@ -1,9 +1,6 @@
 var fs = require('fs');
 var generate_datum = require('./generate')
-var knex = require('knex')({
-  dialect: 'sqlite3',
-  connection: { filename: './db/data.db'}
-});
+var knex = require('./knex');
     
 var generateDB = function(number){    
   return knex.schema.dropTableIfExists('listings').
@@ -25,8 +22,11 @@ var generateDB = function(number){
     table.dateTime('close_date');
     table.integer('close_price');
   }).then(function(){
-    for(var i = 0; i < number; i++){
-      var listing = generate_datum();
+    for(var i = 0; i < number; i += 50){
+      var listing = [];
+      for(var j = 0; j < 50; j++){
+        listing.push(generate_datum());
+      }
       knex('listings').insert(listing).then(function(res){
       });
     }

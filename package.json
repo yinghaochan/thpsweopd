@@ -6,6 +6,7 @@
   "dependencies": {
     "chai": "^3.4.1",
     "chai-as-promised": "^5.2.0",
+    "chai-things": "^0.2.0",
     "distributions": "^0.2.1",
     "knex": "^0.9.0",
     "mocha": "^2.3.4",

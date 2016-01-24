@@ -1,27 +1,28 @@
 var chai = require('chai');
-var chaiAsPromised = require('chai-as-promised')
-chai.use(chaiAsPromised);
+chai.use(require('chai-things')).use(require('chai-as-promised'));
 var should = chai.should();
-var assert = chai.assert;
+var expect = chai.expect;
 
+var generateListing = require('./src/generate');
 var generateDB = require('./src/generateDB');
-var knex = require('knex')({
-  dialect: 'sqlite3',
-  connection: { filename: './db/data.db'}
-});
+var knex = require('./src/knex');
+var queryListings = require('./src/search');
 
 
 var DB;
-var listCount = 1000;
+var listCount = 70000;
 
 describe('Build database', function() {
+  var home;
   before(function(){
+    home = generateListing();
     this.timeout(listCount * 100)
     return knex('listings').count('id').then(function(res){
-          if(res[0]['count("id")'] < listCount){
+          if(res[0]['count("id")'] !== listCount){
+            console.log('\n generating ', listCount, ' home listings')
             return generateDB(listCount);
           } else {
-            console.log('database already generated!')
+            console.log('\n database already generated!')
           }
     });
   });
@@ -55,6 +56,50 @@ describe('Build database', function() {
       return DB.first().should.eventually.include.keys(keys);
     })
   });
+  
+  describe('search', function() {
+
+    it('should find nearby properties', function() {
+      var range = 0.1;
+      
+      return DB.whereBetween('lat', [home.lat-range, home.lat+range])
+              .whereBetween('lon', [home.lon-range, home.lon+range])
+              .should.eventually.have.length.above(listCount*0.01); 
+    });
+    
+    it('should have the same dwelling type', function(){
+      var homeSpecs = {
+        num_bathrooms: home.num_bathrooms,
+        num_bedrooms: home.num_bedrooms,
+        exterior_stories: home.exterior_stories,
+        pool: home.pool
+      }
+      
+      return DB.where(homeSpecs).should.eventually.all.have.property('num_bathrooms', home.num_bathrooms);
+    })
+    
+    
+  it('should work with ./src/search.js', function(){
+ 
+    return queryListings(home, 100, 100, 20, 20).then(function(result){
+          expect(result).to.all.have.property('num_bathrooms', home.num_bathrooms);
+          expect(result).to.all.have.property('num_bedrooms', home.num_bedrooms);
+          expect(result).to.all.have.property('pool', home.pool);
+          expect(result).to.all.have.property('exterior_stories', home.exterior_stories);
+          
+          for(var i = 0; i < result.length; i++){
+            expect(result[i].list_price).to.be.within(home.list_price*0.8,home.list_price*1.2);
+            expect(result[i].living_area).to.be.within(home.living_area*0.8,home.living_area*1.2);
+            expect(result[i].lat).to.be.within(home.lat*0.95,home.lat*1.05);
+            expect(result[i].lon).to.be.within(home.lon*1.05,home.lon*0.95);
+          }
+
+    })
+
+  })
+  
+  });
+  
   
 
   
