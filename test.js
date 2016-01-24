@@ -10,7 +10,7 @@ var queryListings = require('./src/search');
 
 
 var DB;
-var listCount = 70000;
+var listCount = 100000;
 
 describe('Build database', function() {
   var home;
@@ -19,11 +19,14 @@ describe('Build database', function() {
     this.timeout(listCount * 100)
     return knex('listings').count('id').then(function(res){
           if(res[0]['count("id")'] !== listCount){
-            console.log('\n generating ', listCount, ' home listings')
-            return generateDB(listCount);
+            throw new Error("DB count does not match listCount")
           } else {
             console.log('\n database already generated!')
           }
+    }).catch(function(error){
+      console.log(error);
+      console.log('\n generating ', listCount, ' home listings')
+      return generateDB(listCount)
     });
   });
   
