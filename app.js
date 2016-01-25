@@ -13,5 +13,5 @@ var queryListings = require('./src/search');
 
 queryListings(house, 100, 100, 20, 20).then(function(res){
   // log a search result!
-  console.log(res)
+  console.log(res);
 })

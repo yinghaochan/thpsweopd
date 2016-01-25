@@ -27,15 +27,14 @@ var generateDB = function(number){
       for(var j = 0; j < 50; j++){
         listing.push(generate_datum());
       }
-      knex('listings').insert(listing).then(function(res){
-      });
+      knex('listings').insert(listing).then();
     }
 
   }).then(function(){
     return knex('listings').count('id').then(function(res){
           console.log('added: ', res[0]['count("id")'], 'listings');
     });
-  })
+  });
 };
 
 module.exports = generateDB;

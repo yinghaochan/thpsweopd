@@ -80,3 +80,5 @@ $RECYCLE.BIN/
 
 # Sqlite files
 *.db
+build
+.vscode
