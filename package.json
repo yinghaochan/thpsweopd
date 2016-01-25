@@ -16,7 +16,8 @@
   },
   "devDependencies": {},
   "scripts": {
-    "test": "mocha test.js --reporter spec"
+    "test": "mocha test.js --reporter spec",
+    "demo": "node app.js"
   },
   "author": "Ying Hao Chan",
   "license": "ISC"

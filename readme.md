@@ -1,8 +1,8 @@
 ## Getting similar houses
-1. run `npm install`
-1. run `npm test`
-  - this auto populates the database with `listCount = 70,000` listings. Feel free to change that.
+1. run `npm install-test`
+  - this auto populates the database with `listCount = 100,000` listings. Feel free to change that.
 1. `app.js` has an example of using the query
+  1. use: `npm run demo` 
 
 ## Persisting data
 It's stored in an sqlite3 database. 

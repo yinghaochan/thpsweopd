@@ -14,7 +14,7 @@ var queryListings = require('./src/search');
 var home;
 var DB;
 // set the number of listings to generate
-var listCount = 200000;
+var listCount = 100000;
 
 describe('Build database', function() {
   before(function(){
